@@ -1,77 +1,76 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-"use client";
-import React, { useEffect, useState } from "react";
+
+import React from "react";
 import axios from "axios";
 import { API_URL } from "../config/config";
 import Link from "next/link";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { DeleteUserData, GetUsersApi, UpdateUserData } from "../callapi/api";
+import Todo from "./Todo";
 
-function page() {
-  const [dataResponse, setDataResponse] = useState([]);
-  const [selectedRow, setSelectedRow] = useState(null);
-  const [nameError, setNameError] = useState("");
-  const [ageError, setAgeError] = useState("");
-  const numberRegex = /^\d+$/;
-  const notify = () => toast.success("User updated!");
+// import { ToastContainer, toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+import { DeleteUserData, GetUsersApi, UpdateUserData } from "../callapi/api";
+import { redirect } from "next/navigation";
+
+async function page() {
+  // const [dataResponse, setDataResponse] = useState([]);
+  // const [selectedRow, setSelectedRow] = useState(null);
+  // const [nameError, setNameError] = useState("");
+  // const [ageError, setAgeError] = useState("");
+  // const numberRegex = /^\d+$/;
+  // const notify = () => toast.success("User updated!");
 
   // Fetch all data
-  const handleFetchData = async () => {
-    const responseData = await GetUsersApi();
-    if (responseData.status === 200) {
-      setDataResponse(responseData.data);
-    }
-  };
 
-  useEffect(() => {
-    handleFetchData();
-    return () => {};
-  }, []);
+  // useEffect(() => {
+  //   handleFetchData();
+  //   return () => {};
+  // }, []);
 
-  // Delete record
-  const handleDeleteRecord = async (id) => {
-    const responseData = await DeleteUserData(id);
-    if (responseData.status === 200) {
-      await handleFetchData();
-      toast.success("User deleted!");
-    }
-  };
+  // // Delete record
+  // const handleDeleteRecord = async (id) => {
+  //   const responseData = await DeleteUserData(id);
+  //   if (responseData.status === 200) {
+  //     await handleFetchData();
+  //     toast.success("User deleted!");
+  //   }
+  // };
 
-  // Reset
-  const handleReset = () => {
-    setSelectedRow(null);
-    setAgeError("");
-    setNameError("");
-  };
+  // // Reset
+  // const handleReset = () => {
+  //   setSelectedRow(null);
+  //   setAgeError("");
+  //   setNameError("");
+  // };
 
-  // Update record
-  const handleUpdateRecord = async (id) => {
-    dataResponse.map(async (item) => {
-      if (item.id === id) {
-        if (item.name.length === 0) {
-          setNameError("Name cannot empty.");
-          return;
-        } else {
-          setNameError("");
-        }
-        if (numberRegex.test(item.age) === true) {
-          setAgeError("");
-          const responseData = await UpdateUserData(id, item.name, item.age);
-          if (responseData.status === 200) {
-            setSelectedRow(null);
-            await handleFetchData();
-            notify();
-          }
-        } else {
-          setAgeError("Enter numbers only.");
-        }
-      }
-    });
-  };
+  // // Update record
+  // const handleUpdateRecord = async (id) => {
+  //   dataResponse.map(async (item) => {
+  //     if (item.id === id) {
+  //       if (item.name.length === 0) {
+  //         setNameError("Name cannot empty.");
+  //         return;
+  //       } else {
+  //         setNameError("");
+  //       }
+  //       if (numberRegex.test(item.age) === true) {
+  //         setAgeError("");
+  //         const responseData = await UpdateUserData(id, item.name, item.age);
+  //         if (responseData.status === 200) {
+  //           setSelectedRow(null);
+  //           await handleFetchData();
+  //           notify();
+  //         }
+  //       } else {
+  //         setAgeError("Enter numbers only.");
+  //       }
+  //     }
+  //   });
+  // };
+  const responseData = await GetUsersApi();
+  if (true) redirect("/");
   return (
     <>
-      <ToastContainer
+      {/* <ToastContainer
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -82,7 +81,7 @@ function page() {
         draggable
         pauseOnHover
         theme="light"
-      />
+      /> */}
       <div className="flex  justify-center mt-10">
         <Link className="bg-cyan-300 p-2 rounded-lg" href="/">
           Add new record
@@ -98,7 +97,7 @@ function page() {
               <td className="p-2  w-60 text-center">Delete</td>
             </tr>
           </thead>
-          <tbody>
+          {/* <tbody>
             {dataResponse.length !== 0 &&
               dataResponse.map((data, index) => {
                 return (
@@ -189,8 +188,9 @@ function page() {
                   </tr>
                 );
               })}
-          </tbody>
+          </tbody> */}
         </table>
+        <Todo data={responseData} />
       </div>
     </>
   );
